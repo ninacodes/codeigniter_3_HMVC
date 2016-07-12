@@ -1,0 +1,33 @@
+Options -Indexes
+Options +FollowSymLinks
+
+# Set the default file for indexes
+DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+
+    # activate URL rewriting
+    RewriteEngine on
+
+    # do not rewrite links to the documentation, assets and public files
+    RewriteCond $1 !^(index\.php|public|robots\.txt)
+
+    # do not rewrite for php files in the document root, robots.txt or the maintenance page
+    RewriteCond $1 !^([^\..]+\.php|robots\.txt|sitemap\.xml)
+
+    # but rewrite everything else
+    RewriteRule ^(.*)$ index.php?/$1 [L]
+    
+    # rewrite capital letters to lowercase
+    RewriteRule ^(.*?[A-Z]+.*)$ /${lc:$1} [L,NE,R=302]
+
+</IfModule>
+
+<IfModule !mod_rewrite.c>
+
+    # If we don't have mod_rewrite installed, all 404's
+    # can be sent to index.php, and everything works as normal.
+
+    ErrorDocument 404 index.php
+
+</IfModule>
